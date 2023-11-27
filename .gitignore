@@ -1,0 +1,7 @@
+.idea/.gitignore
+.idea/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/simple-django.iml
+.idea/vcs.xml
+drf_project/drf_project/__pycache__/
