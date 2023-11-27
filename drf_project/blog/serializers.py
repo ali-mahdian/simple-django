@@ -12,10 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
     rating_count = serializers.SerializerMethodField()
+    user_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'average_rating', 'rating_count']
+        fields = ['title', 'content', 'average_rating', 'rating_count', 'user_rating']
 
     def get_average_rating(self, obj):
         ratings = obj.ratings.all()
@@ -26,6 +27,15 @@ class PostSerializer(serializers.ModelSerializer):
     def get_rating_count(self, obj):
         return obj.ratings.count()
 
+    def get_user_rating(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            try:
+                user_rating = obj.ratings.get(user=user)
+                return user_rating.value
+            except Rating.DoesNotExist:
+                return None
+        return None
 
 class RatingSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
